@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nerd Nation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #000;
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      overflow: hidden;
+      height: 100vh;
+      position: relative;
+    }
+
+    .noise {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 4px 4px;
+      opacity: 0.15;
+      pointer-events: none;
+    }
+
+    .grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255, 196, 0, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 196, 0, 0.05) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+    }
+
+    .container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 4vw 2vw;
+      gap: 12px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .left {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      width: fit-content;
+    }
+
+    .logo {
+      width: min(22vw, 260px);
+      filter: drop-shadow(0 0 25px rgba(255, 191, 0, 0.35));
+      transform: rotate(-2deg);
+      display: block;
+    }
+
+    .tagline {
+      margin-top: 18px;
+      width: 100%;
+      text-align: justify;
+      text-align-last: justify;
+      font-size: clamp(1rem, 1.8vw, 1.8rem);
+      font-weight: 900;
+      color: #ffc400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding-left: 4px;
+    }
+
+    .right {
+      flex: 0 0 auto;
+      margin-left: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      position: relative;
+      gap: 14px;
+    }
+
+    .description {
+      font-size: clamp(1.1rem, 1.8vw, 2rem);
+      line-height: 1.5;
+      font-weight: 500;
+      color: #f5f5f5;
+      max-width: 460px;
+    }
+
+    .highlight {
+      color: #ffc400;
+      font-weight: 900;
+    }
+
+    .drop {
+      align-self: flex-start;
+      position: relative;
+      white-space: nowrap;
+      font-size: clamp(0.95rem, 1.2vw, 1.15rem);
+      font-weight: 900;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #ffc400;
+      border: 2px solid #ffc400;
+      padding: 12px 22px;
+      border-radius: 999px;
+      box-shadow: 0 0 20px rgba(255, 196, 0, 0.25);
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    .floating-circle {
+      position: absolute;
+      width: 250px;
+      height: 250px;
+      border: 2px solid rgba(255, 196, 0, 0.08);
+      border-radius: 50%;
+      top: -50px;
+      right: -50px;
+    }
+
+    .floating-square {
+      position: absolute;
+      width: 140px;
+      height: 140px;
+      border: 2px solid rgba(255, 196, 0, 0.08);
+      transform: rotate(25deg);
+      bottom: 10%;
+      left: 5%;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.04);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .social {
+      margin-top: 6px;
+      font-size: 0.95rem;
+      color: #d9d9d9;
+      letter-spacing: 1px;
+    }
+
+    .social a {
+      color: #ffc400;
+      text-decoration: none;
+      font-weight: 700;
+      transition: opacity 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      vertical-align: middle;
+    }
+
+    .instagram-icon {
+      width: 22px;
+      height: 22px;
+      stroke: #ffc400;
+      stroke-width: 2;
+      fill: none;
+    }
+
+    .social a:hover {
+      opacity: 0.75;
+    }
+
+    /* ── Email capture ── */
+    .email-wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .email-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: #888;
+    }
+
+    .email-row {
+      display: flex;
+      border: 2px solid #ffc400;
+      border-radius: 999px;
+      overflow: hidden;
+      box-shadow: 0 0 16px rgba(255, 196, 0, 0.18);
+      transition: box-shadow 0.25s;
+    }
+
+    .email-row:focus-within {
+      box-shadow: 0 0 28px rgba(255, 196, 0, 0.35);
+    }
+
+    .email-row input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #f5f5f5;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.88rem;
+      padding: 10px 18px;
+    }
+
+    .email-row input::placeholder { color: #555; }
+
+    .email-row button {
+      background: #ffc400;
+      border: none;
+      color: #000;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 0 20px;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+      border-radius: 0 999px 999px 0;
+    }
+
+    .email-row button:hover { background: #ffd740; }
+
+    .email-success {
+      display: none;
+      font-size: 0.82rem;
+      color: #ffc400;
+      font-weight: 700;
+      letter-spacing: 1px;
+      padding: 10px 18px;
+      border: 2px solid rgba(255,196,0,0.3);
+      border-radius: 999px;
+      background: rgba(255,196,0,0.06);
+    }
+
+    .email-note {
+      font-size: 0.68rem;
+      color: #555;
+      letter-spacing: 0.5px;
+      padding-left: 4px;
+    }
+
+    @media (max-width: 900px) {
+      body {
+        overflow: hidden;
+        height: 100vh;
+      }
+
+      .container {
+        height: 100vh;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        text-align: center;
+        padding: 5vh 24px;
+        gap: 0;
+      }
+
+      .left {
+        height: 33vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .right {
+        height: 67vh;
+        width: 100%;
+        margin-left: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .logo {
+        width: 62vw;
+        max-width: 240px;
+      }
+
+      .tagline {
+        text-align: center;
+        text-align-last: center;
+        width: auto;
+        letter-spacing: 0.08em;
+        padding-left: 0;
+        margin-top: 14px;
+      }
+
+      .description {
+        text-align: center;
+        font-size: 1.25rem;
+        line-height: 1.5;
+        max-width: 320px;
+        margin: 0 auto;
+      }
+
+      .drop {
+        align-self: center;
+        font-size: 0.82rem;
+        letter-spacing: 2px;
+        padding: 10px 18px;
+        white-space: nowrap;
+      }
+
+      .email-wrap { align-items: center; width: 100%; max-width: 340px; }
+      .email-label { text-align: center; }
+      .email-note { text-align: center; padding-left: 0; }
+
+      .social {
+        text-align: center;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="noise"></div>
+  <div class="grid"></div>
+
+  <div class="floating-circle"></div>
+  <div class="floating-square"></div>
+
+  <div class="container">
+
+    <div class="left">
+      <img src="nerdnation-logo.png" alt="Nerd Nation Logo" class="logo">
+      <div class="tagline">#FlexYourVibe</div>
+    </div>
+
+    <div class="right">
+      <div class="description">
+        We love <span class="highlight">pop culture</span>, Just like you.<br>
+        Flex your fandom with pride.
+      </div>
+
+      <div class="drop">
+        First Drop Coming Soon ⚡
+      </div>
+
+      <div class="email-wrap">
+        <div class="email-label">Get notified on drop day</div>
+        <div class="email-row" id="email-row">
+          <input type="email" id="email-input" placeholder="your@email.com" autocomplete="email" />
+          <button onclick="handleSignup()">Notify Me</button>
+        </div>
+        <div class="email-success" id="email-success">✅ You're on the list!</div>
+        <div class="email-note">No spam. Just the drop alert.</div>
+      </div>
+
+      <div class="social">
+        For more updates, follow us 
+        <a href="https://www.instagram.com/nerdnation.merch/" target="_blank" aria-label="Instagram">
+          <svg class="instagram-icon" viewBox="0 0 24 24">
+            <rect x="3" y="3" width="18" height="18" rx="5"></rect>
+            <circle cx="12" cy="12" r="4"></circle>
+            <circle cx="17.5" cy="6.5" r="1"></circle>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    async function handleSignup() {
+      const emailInput = document.getElementById('email-input');
+      const email = emailInput.value.trim();
+
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        emailInput.style.color = '#ff4444';
+        emailInput.focus();
+
+        setTimeout(() => {
+          emailInput.style.color = '';
+        }, 800);
+
+        return;
+      }
+
+      try {
+        const response = await fetch('https://formspree.io/f/xpqbknqy', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            email: email
+          })
+        });
+
+        if (response.ok) {
+          document.getElementById('email-row').style.display = 'none';
+          document.getElementById('email-success').style.display = 'block';
+        } else {
+          alert('Something went wrong. Please try again.');
+        }
+
+      } catch (error) {
+        alert('Network error. Please try again.');
+      }
+    }
+
+    document.getElementById('email-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') handleSignup();
+    });
+  </script>
+</body>
+</html>
